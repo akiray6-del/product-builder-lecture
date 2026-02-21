@@ -31,13 +31,15 @@ class LottoDisplay extends HTMLElement {
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
-                background-color: #fff;
+                background-color: var(--number-bg, #fff);
+                color: var(--number-text, #333);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-size: 24px;
                 font-weight: bold;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                transition: background-color 0.3s, color 0.3s;
             }
         `;
 
@@ -60,9 +62,48 @@ function generateNumbers() {
     return Array.from(numbers).sort((a, b) => a - b);
 }
 
-document.getElementById('generate').addEventListener('click', () => {
+// Lotto display update
+function updateLottoDisplay() {
     const lottoDisplay = document.querySelector('.lotto-display');
-    const newDisplay = document.createElement('lotto-display');
-    newDisplay.setAttribute('numbers', generateNumbers().join(','));
-    lottoDisplay.replaceWith(newDisplay);
+    const existingLotto = lottoDisplay.querySelector('lotto-display');
+    const numbers = generateNumbers().join(',');
+    
+    if (existingLotto) {
+        existingLotto.setAttribute('numbers', numbers);
+    } else {
+        const newDisplay = document.createElement('lotto-display');
+        newDisplay.setAttribute('numbers', numbers);
+        lottoDisplay.appendChild(newDisplay);
+    }
+}
+
+document.getElementById('generate').addEventListener('click', updateLottoDisplay);
+
+// Theme toggle logic
+const themeButton = document.getElementById('theme-button');
+const body = document.body;
+
+function setTheme(isDark) {
+    if (isDark) {
+        body.classList.add('dark-mode');
+        themeButton.textContent = '라이트 모드';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        body.classList.remove('dark-mode');
+        themeButton.textContent = '다크 모드';
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+// Initial theme setup
+const savedTheme = localStorage.getItem('theme');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+    setTheme(true);
+}
+
+themeButton.addEventListener('click', () => {
+    const isDark = body.classList.contains('dark-mode');
+    setTheme(!isDark);
 });
