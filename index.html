@@ -7,8 +7,6 @@
     <meta name="description" content="Relieve stress and anxiety with our guided 4-7-8 breathing timer. A simple, effective visualization tool for deep relaxation and better sleep.">
     <meta name="keywords" content="4-7-8 breathing, breathing exercise, stress relief, anxiety relief, sleep aid, guided meditation, mindfulness">
     <link rel="stylesheet" href="style.css">
-    <!-- Google AdSense Placeholder (Uncomment and add your client ID when ready) -->
-    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 </head>
 <body>
     <header>
@@ -22,15 +20,31 @@
 
     <main>
         <!-- Ad Placement: Top -->
-        <div class="ad-container top-ad">
-            <div class="ad-placeholder">Advertisement Space</div>
-        </div>
+        <div class="ad-container top-ad"></div>
 
         <section class="breathing-container">
-            <div class="visualizer-wrapper">
-                <div id="visualizer" class="visualizer"></div>
-                <div class="status-text" id="phase-text">Ready to Begin</div>
-                <div class="timer-text" id="timer-display">0</div>
+            <div class="breathing-layout">
+                <div class="visualizer-side">
+                    <div class="visualizer-wrapper">
+                        <div id="visualizer" class="visualizer"></div>
+                        <div class="status-text" id="phase-text">Ready</div>
+                        <div class="timer-text" id="timer-display">0</div>
+                    </div>
+                </div>
+                
+                <div class="character-side">
+                    <div id="pixel-dog" class="pixel-dog-container">
+                        <!-- Pixel Art Dog will be rendered here via CSS/JS -->
+                        <div class="dog-pixel-art inhale-pose">
+                            <div class="dog-body"></div>
+                            <div class="dog-head"></div>
+                            <div class="dog-ears"></div>
+                            <div class="dog-eyes"></div>
+                            <div class="dog-nose"></div>
+                            <div class="dog-mouth"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="controls">
@@ -44,9 +58,7 @@
         </section>
 
         <!-- Ad Placement: Middle -->
-        <div class="ad-container middle-ad">
-            <div class="ad-placeholder">Advertisement Space</div>
-        </div>
+        <div class="ad-container middle-ad"></div>
 
         <section class="info-section">
             <h2>How to Use the 4-7-8 Technique</h2>
@@ -64,15 +76,10 @@
                     <p><strong>Exhale</strong> through your mouth with a whoosh sound.</p>
                 </div>
             </div>
-            <p class="description">
-                The 4-7-8 breathing technique, developed by Dr. Andrew Weil, is a rhythmic breathing pattern that acts as a natural tranquilizer for the nervous system. Regular practice can help reduce anxiety, manage stress, and improve sleep quality.
-            </p>
         </section>
 
         <!-- Ad Placement: Bottom -->
-        <div class="ad-container bottom-ad">
-            <div class="ad-placeholder">Advertisement Space</div>
-        </div>
+        <div class="ad-container bottom-ad"></div>
     </main>
 
     <footer>

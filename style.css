@@ -11,6 +11,11 @@
     --container-bg: #ffffff;
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --ad-bg: #e9ecef;
+    
+    /* Pixel Art Dog Colors */
+    --dog-brown: #8b5a2b;
+    --dog-light: #d2b48c;
+    --dog-dark: #5d3a1a;
 }
 
 body.dark-mode {
@@ -53,7 +58,7 @@ header {
 }
 
 .header-content {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 0 1rem;
     display: flex;
@@ -84,43 +89,49 @@ header {
 }
 
 main {
-    max-width: 800px;
-    margin: 2rem auto;
+    max-width: 900px;
+    margin: 1.5rem auto;
     padding: 0 1rem;
 }
 
 .ad-container {
     background-color: var(--ad-bg);
     border-radius: 8px;
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+    margin-bottom: 1.5rem;
     min-height: 90px;
-}
-
-.ad-placeholder {
-    font-size: 0.75rem;
-    color: var(--primary-color);
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .breathing-container {
     background-color: var(--container-bg);
     border-radius: 16px;
-    padding: 3rem 2rem;
+    padding: 2.5rem 1.5rem;
     text-align: center;
     box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.breathing-layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
     margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.visualizer-side, .character-side {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .visualizer-wrapper {
     position: relative;
-    width: 250px;
-    height: 250px;
-    margin: 0 auto 2rem;
+    width: 220px;
+    height: 220px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -139,18 +150,104 @@ main {
 }
 
 .status-text {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
     z-index: 10;
 }
 
 .timer-text {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 800;
     z-index: 10;
 }
 
+/* Pixel Art Dog Styling */
+.pixel-dog-container {
+    width: 200px;
+    height: 200px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    image-rendering: pixelated;
+}
+
+.dog-pixel-art {
+    width: 128px;
+    height: 128px;
+    position: relative;
+    transition: transform 0.5s ease;
+}
+
+.dog-body {
+    position: absolute;
+    bottom: 20px;
+    left: 24px;
+    width: 80px;
+    height: 60px;
+    background: var(--dog-brown);
+    box-shadow: 
+        10px 0 0 var(--dog-brown),
+        -10px 0 0 var(--dog-brown);
+}
+
+.dog-head {
+    position: absolute;
+    top: 20px;
+    left: 34px;
+    width: 60px;
+    height: 50px;
+    background: var(--dog-brown);
+    box-shadow: 
+        5px 5px 0 var(--dog-light),
+        -5px 5px 0 var(--dog-brown);
+}
+
+.dog-ears {
+    position: absolute;
+    top: 10px;
+    left: 24px;
+    width: 20px;
+    height: 30px;
+    background: var(--dog-dark);
+    box-shadow: 60px 0 0 var(--dog-dark);
+}
+
+.dog-eyes {
+    position: absolute;
+    top: 35px;
+    left: 45px;
+    width: 8px;
+    height: 8px;
+    background: #000;
+    box-shadow: 25px 0 0 #000;
+}
+
+.dog-nose {
+    position: absolute;
+    top: 50px;
+    left: 60px;
+    width: 10px;
+    height: 8px;
+    background: #000;
+}
+
+.dog-mouth {
+    position: absolute;
+    top: 60px;
+    left: 58px;
+    width: 14px;
+    height: 4px;
+    background: #000;
+}
+
+/* Breathing Poses */
+.inhale-pose { transform: scale(1.1) translateY(-10px); }
+.hold-pose { transform: scale(1.1); }
+.exhale-pose { transform: scale(1); translateY(5px); }
+
+/* Controls & Info */
 .controls {
     display: flex;
     gap: 1rem;
@@ -173,11 +270,6 @@ main {
     color: white;
 }
 
-.main-btn:hover {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-}
-
 .secondary-btn {
     background-color: var(--secondary-color);
     color: var(--text-color);
@@ -188,9 +280,7 @@ main {
     color: var(--primary-color);
 }
 
-.hidden {
-    display: none;
-}
+.hidden { display: none; }
 
 .info-section {
     background-color: var(--container-bg);
@@ -199,22 +289,15 @@ main {
     box-shadow: var(--shadow);
 }
 
-.info-section h2 {
-    margin-bottom: 2rem;
-    font-weight: 800;
-    font-size: 1.75rem;
-}
+.info-section h2 { margin-bottom: 2rem; }
 
 .steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 2rem;
-    margin-bottom: 2rem;
 }
 
-.step {
-    text-align: center;
-}
+.step { text-align: center; }
 
 .step-num {
     display: block;
@@ -224,20 +307,14 @@ main {
     margin-bottom: 0.5rem;
 }
 
-.description {
-    color: var(--primary-color);
-    font-size: 1rem;
-}
-
 footer {
     text-align: center;
     padding: 3rem 0;
     color: var(--primary-color);
-    font-size: 0.875rem;
 }
 
 @media (max-width: 600px) {
-    .steps {
-        grid-template-columns: 1fr;
+    .breathing-layout {
+        flex-direction: column;
     }
 }

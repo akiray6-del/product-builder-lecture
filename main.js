@@ -1,8 +1,8 @@
 // 4-7-8 Breathing Timer Logic
 const phases = [
-    { name: 'Inhale', duration: 4, color: 'var(--inhale-color)', scale: 1 },
-    { name: 'Hold', duration: 7, color: 'var(--hold-color)', scale: 1 },
-    { name: 'Exhale', duration: 8, color: 'var(--exhale-color)', scale: 0.4 }
+    { name: 'Inhale', duration: 4, color: 'var(--inhale-color)', scale: 1, pose: 'inhale-pose' },
+    { name: 'Hold', duration: 7, color: 'var(--hold-color)', scale: 1, pose: 'hold-pose' },
+    { name: 'Exhale', duration: 8, color: 'var(--exhale-color)', scale: 0.4, pose: 'exhale-pose' }
 ];
 
 let currentPhaseIndex = 0;
@@ -17,6 +17,7 @@ const cycleDisplay = document.getElementById('cycle-count');
 const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
 const visualizer = document.getElementById('visualizer');
+const dogChar = document.querySelector('.dog-pixel-art');
 
 function updateUI() {
     const phase = phases[currentPhaseIndex];
@@ -27,6 +28,10 @@ function updateUI() {
     // Update visualizer color and scale
     visualizer.style.backgroundColor = phase.color;
     
+    // Character Pose Management
+    dogChar.classList.remove('inhale-pose', 'hold-pose', 'exhale-pose');
+    dogChar.classList.add(phase.pose);
+
     // Inhale: Scale up, Hold: Stay up, Exhale: Scale down
     if (phase.name === 'Inhale') {
         const progress = 1 - (timeLeft / phase.duration);
@@ -59,7 +64,7 @@ function tick() {
             // Limit to 4 cycles as recommended initially
             if (cycleCount >= 4) {
                 stopBreathing();
-                phaseText.textContent = 'Session Complete';
+                phaseText.textContent = 'Session Done';
                 return;
             }
         }
@@ -93,10 +98,12 @@ function stopBreathing() {
     
     currentPhaseIndex = 0;
     timeLeft = 0;
-    phaseText.textContent = 'Ready to Begin';
+    phaseText.textContent = 'Ready';
     timerDisplay.textContent = '0';
     visualizer.style.transform = 'scale(0.4)';
     visualizer.style.opacity = 0.2;
+    
+    dogChar.classList.remove('inhale-pose', 'hold-pose', 'exhale-pose');
 }
 
 startBtn.addEventListener('click', startBreathing);
