@@ -1,101 +1,123 @@
-class LottoDisplay extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({ mode: 'open' });
-    }
+// 4-7-8 Breathing Timer Logic
+const phases = [
+    { name: 'Inhale', duration: 4, color: 'var(--inhale-color)', scale: 1 },
+    { name: 'Hold', duration: 7, color: 'var(--hold-color)', scale: 1 },
+    { name: 'Exhale', duration: 8, color: 'var(--exhale-color)', scale: 0.4 }
+];
 
-    connectedCallback() {
-        this.render();
-    }
+let currentPhaseIndex = 0;
+let timeLeft = 0;
+let cycleCount = 0;
+let timerId = null;
+let isRunning = false;
 
-    static get observedAttributes() {
-        return ['numbers'];
-    }
+const phaseText = document.getElementById('phase-text');
+const timerDisplay = document.getElementById('timer-display');
+const cycleDisplay = document.getElementById('cycle-count');
+const startBtn = document.getElementById('start-btn');
+const stopBtn = document.getElementById('stop-btn');
+const visualizer = document.getElementById('visualizer');
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'numbers') {
-            this.render();
-        }
-    }
-
-    render() {
-        const numbers = this.getAttribute('numbers')?.split(',') || [];
-        const style = `
-            .lotto-display {
-                display: flex;
-                justify-content: center;
-                gap: 10px;
-                margin: 20px 0;
-            }
-            .lotto-number {
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                background-color: var(--number-bg, #fff);
-                color: var(--number-text, #333);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-size: 24px;
-                font-weight: bold;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-                transition: background-color 0.3s, color 0.3s;
-            }
-        `;
-
-        this.shadowRoot.innerHTML = `
-            <style>${style}</style>
-            <div class="lotto-display">
-                ${numbers.map(num => `<div class="lotto-number">${num}</div>`).join('')}
-            </div>
-        `;
-    }
-}
-
-customElements.define('lotto-display', LottoDisplay);
-
-function generateNumbers() {
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        numbers.add(Math.floor(Math.random() * 45) + 1);
-    }
-    return Array.from(numbers).sort((a, b) => a - b);
-}
-
-// Lotto display update
-function updateLottoDisplay() {
-    const lottoDisplay = document.querySelector('.lotto-display');
-    const existingLotto = lottoDisplay.querySelector('lotto-display');
-    const numbers = generateNumbers().join(',');
+function updateUI() {
+    const phase = phases[currentPhaseIndex];
+    phaseText.textContent = phase.name;
+    timerDisplay.textContent = timeLeft;
+    cycleDisplay.textContent = cycleCount;
     
-    if (existingLotto) {
-        existingLotto.setAttribute('numbers', numbers);
-    } else {
-        const newDisplay = document.createElement('lotto-display');
-        newDisplay.setAttribute('numbers', numbers);
-        lottoDisplay.appendChild(newDisplay);
+    // Update visualizer color and scale
+    visualizer.style.backgroundColor = phase.color;
+    
+    // Inhale: Scale up, Hold: Stay up, Exhale: Scale down
+    if (phase.name === 'Inhale') {
+        const progress = 1 - (timeLeft / phase.duration);
+        const currentScale = 0.4 + (0.6 * progress);
+        visualizer.style.transform = `scale(${currentScale})`;
+        visualizer.style.opacity = 0.2 + (0.4 * progress);
+    } else if (phase.name === 'Hold') {
+        visualizer.style.transform = `scale(1)`;
+        visualizer.style.opacity = 0.6;
+    } else if (phase.name === 'Exhale') {
+        const progress = 1 - (timeLeft / phase.duration);
+        const currentScale = 1 - (0.6 * progress);
+        visualizer.style.transform = `scale(${currentScale})`;
+        visualizer.style.opacity = 0.6 - (0.4 * progress);
     }
 }
 
-document.getElementById('generate').addEventListener('click', updateLottoDisplay);
+function tick() {
+    if (timeLeft > 0) {
+        timeLeft--;
+        updateUI();
+    } else {
+        // Switch to next phase
+        currentPhaseIndex++;
+        
+        if (currentPhaseIndex >= phases.length) {
+            currentPhaseIndex = 0;
+            cycleCount++;
+            
+            // Limit to 4 cycles as recommended initially
+            if (cycleCount >= 4) {
+                stopBreathing();
+                phaseText.textContent = 'Session Complete';
+                return;
+            }
+        }
+        
+        timeLeft = phases[currentPhaseIndex].duration;
+        updateUI();
+    }
+}
 
-// Theme toggle logic
+function startBreathing() {
+    if (isRunning) return;
+    
+    isRunning = true;
+    currentPhaseIndex = 0;
+    cycleCount = 0;
+    timeLeft = phases[currentPhaseIndex].duration;
+    
+    startBtn.classList.add('hidden');
+    stopBtn.classList.remove('hidden');
+    
+    updateUI();
+    timerId = setInterval(tick, 1000);
+}
+
+function stopBreathing() {
+    isRunning = false;
+    clearInterval(timerId);
+    
+    startBtn.classList.remove('hidden');
+    stopBtn.classList.add('hidden');
+    
+    currentPhaseIndex = 0;
+    timeLeft = 0;
+    phaseText.textContent = 'Ready to Begin';
+    timerDisplay.textContent = '0';
+    visualizer.style.transform = 'scale(0.4)';
+    visualizer.style.opacity = 0.2;
+}
+
+startBtn.addEventListener('click', startBreathing);
+stopBtn.addEventListener('click', stopBreathing);
+
+// Theme Toggle Logic
 const themeButton = document.getElementById('theme-button');
 const body = document.body;
 
 function setTheme(isDark) {
     if (isDark) {
         body.classList.add('dark-mode');
-        themeButton.textContent = '라이트 모드';
+        themeButton.textContent = 'Light Mode';
         localStorage.setItem('theme', 'dark');
     } else {
         body.classList.remove('dark-mode');
-        themeButton.textContent = '다크 모드';
+        themeButton.textContent = 'Dark Mode';
         localStorage.setItem('theme', 'light');
     }
 }
 
-// Initial theme setup
 const savedTheme = localStorage.getItem('theme');
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -104,6 +126,5 @@ if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
 }
 
 themeButton.addEventListener('click', () => {
-    const isDark = body.classList.contains('dark-mode');
-    setTheme(!isDark);
+    setTheme(!body.classList.contains('dark-mode'));
 });
